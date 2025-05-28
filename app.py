@@ -26,13 +26,12 @@ from PIL import Image
 
 # Cargar la imagen
 image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png")
-archivo = open
-
+new_image = image.resize((1000, 800))
 # Mostrarla
-st.image(image, caption='Logotipo de la aerolínea', use_container_width=True)
+st.image(image, caption='Logotipo de la aerolínea')
 
 # 3. Filtros interactivos
-st.sidebar.title("🎛️ Filtros")
+st.sidebar.title("Filtros")
 tipo_cliente = st.sidebar.selectbox("Tipo de Cliente", df['Customer Type'].unique())
 df_filtrado = df[df['Customer Type'] == tipo_cliente]
 
