@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix 
 
 st.set_page_config(layout="wide")
 st.title("✈️ Análisis de Satisfacción de Pasajeros de Aerolínea")
@@ -20,6 +20,16 @@ df = cargar_datos()
 # 2. Mostrar una vista previa
 st.subheader("Vista previa del conjunto de datos")
 st.dataframe(df.head())
+
+import streamlit as st
+from PIL import Image
+
+# Cargar la imagen
+image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png")
+archivo = open
+
+# Mostrarla
+st.image(image, caption='Logotipo de la aerolínea', use_container_width=True)
 
 # 3. Filtros interactivos
 st.sidebar.title("🎛️ Filtros")
