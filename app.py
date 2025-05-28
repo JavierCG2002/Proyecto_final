@@ -25,10 +25,9 @@ import streamlit as st
 from PIL import Image
 
 # Cargar la imagen
-image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png")
-new_image = image.resize((600, 400))
+image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png").resize((600, 400))
 # Mostrarla
-st.image(new_image)
+st.image(image)
 
 # 3. Filtros interactivos
 st.sidebar.title("Filtros")
