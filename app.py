@@ -17,6 +17,11 @@ def cargar_datos():
 
 df = cargar_datos()
 
+
+
+st.subheader("TEXTO DE EJEMPLO")
+
+
 # 2. Mostrar una vista previa
 st.subheader("Vista previa del conjunto de datos")
 st.dataframe(df.head())
