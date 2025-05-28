@@ -26,9 +26,9 @@ from PIL import Image
 
 # Cargar la imagen
 image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png")
-new_image = image.resize((1000, 800))
+new_image = image.resize((600, 400))
 # Mostrarla
-st.image(new_image, caption='Logotipo de la aerolínea')
+st.image(new_image)
 
 # 3. Filtros interactivos
 st.sidebar.title("Filtros")
