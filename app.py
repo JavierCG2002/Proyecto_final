@@ -7,19 +7,28 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix 
 
 st.set_page_config(layout="wide")
-st.title("✈️ Análisis de Satisfacción de Pasajeros de Aerolínea")
+st.title("✈️ Análisis de Satisfacción de Pasajeros de una Aerolínea")
 
-# 1. Cargar los datos
+# 1. Carga del dataset
 @st.cache_data
 def cargar_datos():
-    df = pd.read_csv("train.csv")  # Asegúrate de tener el CSV localmente
+    df = pd.read_csv("train.csv")
     return df
 
 df = cargar_datos()
 
+st.subheader("Introducción")
+
+st.markdown("""
+En este proyecto se tratará la creación y el estudio de un programa de **predicción del nivel de satisfacción** 
+de los pasajeros de una aerolínea, utilizando para ello algoritmos de aprendizaje automático sobre datos reales 
+recogidos de las experiencias de usuarios.
+
+El objetivo es comprender qué factores influyen más en la percepción del cliente, y construir un modelo predictivo 
+que permita anticipar si un pasajero estará satisfecho o no.
+""")
 
 
-st.subheader("TEXTO DE EJEMPLO")
 
 
 # 2. Mostrar una vista previa
@@ -86,10 +95,24 @@ with st.form("form_prediccion"):
     age = st.slider("Edad", 7, 85, 30)
     travel_type = st.selectbox("Tipo de viaje", df_model['Type of Travel'].unique())
     travel_class = st.selectbox("Clase", df_model['Class'].unique())
+    departure_convenient = st.slider("Hora de salida/llegada conveniente", 0, 5, 3)
     flight_distance = st.slider("Distancia del vuelo", 30, 5000, 1000)
+    online_booking = st.slider("Facilidad de reserva online", 0, 5, 3)
     wifi = st.slider("Servicio wifi (0-5)", 0, 5, 3)
     food = st.slider("Comida y bebida (0-5)", 0, 5, 3)
     online_boarding = st.slider("Embarque online (0-5)", 0, 5, 3)
+    gate_location = st.slider("Ubicación de la puerta de embarque", 0, 5, 3)
+    food_drink = st.slider("Comida y bebida", 0, 5, 3)
+    seat_comfort = st.slider("Comodidad del asiento", 0, 5, 3)
+    entertainment = st.slider("Entretenimiento a bordo", 0, 5, 3)
+    onboard_service = st.slider("Servicio a bordo", 0, 5, 3)
+    leg_room = st.slider("Espacio para las piernas", 0, 5, 3)
+    baggage = st.slider("Manejo del equipaje", 0, 5, 3)
+    checkin = st.slider("Check-in", 0, 5, 3)
+    inflight_service = st.slider("Atención en vuelo", 0, 5, 3)
+    cleanliness = st.slider("Limpieza", 0, 5, 3)
+    dep_delay = st.number_input("Minutos de retraso en la salida", min_value=0)
+    arr_delay = st.number_input("Minutos de retraso en la llegada", min_value=0)
 
     submit = st.form_submit_button("Predecir satisfacción")
 
@@ -102,8 +125,21 @@ if submit:
         'Class': [travel_class],
         'Flight Distance': [flight_distance],
         'Inflight wifi service': [wifi],
-        'Food and drink': [food],
-        'Online boarding': [online_boarding]
+        'Departure/Arrival time convenient': [departure_convenient],
+        'Ease of Online booking': [online_booking],
+        'Gate location': [gate_location],
+        'Food and drink': [food_drink],
+        'Online boarding': [online_boarding],
+        'Seat comfort': [seat_comfort],
+        'Inflight entertainment': [entertainment],
+        'On-board service': [onboard_service],
+        'Leg room service': [leg_room],
+        'Baggage handling': [baggage],
+        'Check-in service': [checkin],
+        'Inflight service': [inflight_service],
+        'Cleanliness': [cleanliness],
+        'Departure Delay in Minutes': [dep_delay],
+        'Arrival Delay in Minutes': [arr_delay]
     })
 
     input_encoded = pd.get_dummies(input_df)
