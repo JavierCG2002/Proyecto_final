@@ -43,27 +43,40 @@ image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png").resize(
 # Mostrarla
 st.image(image)
 
-# 3. Filtros interactivos
-st.sidebar.title("Filtros")
-tipo_cliente = st.sidebar.selectbox("Tipo de Cliente", df['Customer Type'].unique())
-df_filtrado = df[df['Customer Type'] == tipo_cliente]
 
-# 4. Visualización de satisfacción por tipo de cliente
-st.subheader(f"Satisfacción de clientes '{tipo_cliente}'")
-fig, ax = plt.subplots()
-sns.countplot(data=df_filtrado, x="satisfaction", palette="pastel", ax=ax)
-st.pyplot(fig)
+datos_tabla_modelos = {
+    "Datos de entrenamiento": [
+        "Random Forest Classifier",
+        "Decision Tree Classifier",
+        "KNeighbors Classifier",
+        "SVM Linear"
+    ],
+    "Datos normales": [
+        "95,58",
+        "94,52",
+        "64,2 (k = 20)",
+        "-"
+    ],
+    "Datos escalados": [
+        "95,54",
+        "94,56",
+        "93,0 (k = 9)",
+        "87,59"
+    ],
+    "Análisis de Componentes Principales\n(95 % varianza)": [
+        "91,63",
+        "88,77",
+        "82,0 (k = 20)",
+        "95,36"
+    ]
+}
 
-# 5. Opinión sobre el wifi de los NO satisfechos
-st.subheader("Opinión sobre el wifi (clientes no satisfechos)")
-wifi_opinion = df[df["satisfaction"] == "neutral or dissatisfied"]["Inflight wifi service"]
-fig2, ax2 = plt.subplots()
-wifi_opinion.value_counts().sort_index().plot.pie(
-    autopct="%1.1f%%", startangle=90, colors=sns.color_palette("Blues"), ax=ax2
-)
-ax2.set_ylabel("")
-ax2.set_title("Opinión sobre el wifi")
-st.pyplot(fig2)
+tabla_modelos = pd.DataFrame(datos_tabla_modelos)
+
+# Mostrar tabla en Streamlit
+st.subheader("📊 Comparativa de modelos y su precision")
+st.table(tabla_modelos)
+
 
 st.header("✈️ Predicción de satisfacción")
 
