@@ -7,12 +7,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix 
 
 st.set_page_config(layout="wide")
-st.title("✈️ Análisis de Satisfacción de Pasajeros de una Aerolínea")
+st.title("Análisis de Satisfacción de Pasajeros de una Aerolínea")
 
 # 1. Carga del dataset
 @st.cache_data
 def cargar_datos():
-    df = pd.read_csv("train.csv")
+    df = pd.read_csv("satisfaccion_aerolinea.csv")
     return df
 
 df = cargar_datos()
@@ -29,8 +29,8 @@ que permita anticipar si un pasajero estará satisfecho o no.
 """)
 
 # 2. Mostrar una vista previa
-st.subheader("Vista previa del conjunto de datos")
-st.dataframe(df.head())
+st.subheader("Vista del conjunto de datos")
+st.dataframe(df.head(7))
 
 import streamlit as st
 from PIL import Image
@@ -40,7 +40,7 @@ image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png").resize(
 # Mostrarla
 st.image(image)
 
-
+# Tabla de los modelos
 datos_tabla_modelos = {
     "Datos de entrenamiento": [
         "Random Forest Classifier",
@@ -71,11 +71,11 @@ datos_tabla_modelos = {
 tabla_modelos = pd.DataFrame(datos_tabla_modelos)
 
 # Mostrar tabla en Streamlit
-st.subheader("📊 Comparativa de modelos y su precision")
+st.subheader("Comparativa de modelos y su precision")
 st.table(tabla_modelos)
 
 
-st.header("✈️ Predicción de satisfacción")
+st.header("Predicción de satisfacción")
 
 # Codificación para variables categóricas
 df_model = df.copy()
@@ -95,7 +95,7 @@ modelo_rf.fit(X_train, y_train)
 
 # Accuracy
 accuracy = accuracy_score(y_test, modelo_rf.predict(X_test))
-st.success(f"📊 Accuracy del modelo: {accuracy:.2f}")
+st.success(f"Accuracy del modelo: {accuracy:.2f}")
 
 # Importancia de las variables
 feature_importances = pd.Series(modelo_rf.feature_importances_, index=X_train.columns)
@@ -118,7 +118,7 @@ plt.tight_layout()
 st.pyplot(fig)
 
 # Formulario de predicción
-st.subheader("🧪 Simula un pasajero para ver su satisfacción")
+st.subheader("Formulario de predicción")
 with st.form("form_prediccion"):
     gender = st.selectbox("Género", df_model['Gender'].unique())
     customer_type = st.selectbox("Tipo de cliente", df_model['Customer Type'].unique())
@@ -176,7 +176,7 @@ if submit:
     input_encoded = input_encoded.reindex(columns=X.columns, fill_value=0)
 
     pred = modelo_rf.predict(input_encoded)[0]
-    resultado = "✅ Satisfecho" if pred == 1 else "❌ No satisfecho"
+    resultado = "Satisfecho" if pred == 1 else "No satisfecho"
     st.subheader("Resultado de la predicción:")
     st.info(resultado)
 
