@@ -28,9 +28,6 @@ El objetivo es comprender qué factores influyen más en la percepción del clie
 que permita anticipar si un pasajero estará satisfecho o no.
 """)
 
-
-
-
 # 2. Mostrar una vista previa
 st.subheader("Vista previa del conjunto de datos")
 st.dataframe(df.head())
