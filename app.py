@@ -90,21 +90,22 @@ st.success(f"📊 Accuracy del modelo: {accuracy:.2f}")
 # Importancia de las variables
 feature_importances = pd.Series(modelo_rf.feature_importances_, index=X_train.columns)
 feature_importances_percent = (feature_importances * 100).round(2)
+feature_importances_percent_sorted = feature_importances_percent.sort_values(ascending=False)
 
-feature_importances_percent_sorted = feature_importances_percent.sort_values(ascending=False) # Ordenar de mayor a menor importancia
-
-# Convertir a DataFrame para usar con seaborn
+# Convertir a DataFrame
 importance_df = feature_importances_percent_sorted.reset_index()
 importance_df.columns = ['Feature', 'Importance (%)']
 
-# Crear gráfico con seaborn
-plt.figure(figsize=(10, 6))
-sns.barplot(data=importance_df, x='Importance (%)', y='Feature', palette='Blues_d')
-plt.title('Importancia de características (%) - Random Forest')
-plt.xlabel('Importancia (%)')
-plt.ylabel('Características')
+# Crear el gráfico
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=importance_df, x='Importance (%)', y='Feature', palette='Blues_d', ax=ax)
+ax.set_title('Importancia de características (%) - Random Forest')
+ax.set_xlabel('Importancia (%)')
+ax.set_ylabel('Características')
 plt.tight_layout()
-plt.show()
+
+# Mostrar en Streamlit
+st.pyplot(fig)
 
 # Formulario de predicción
 st.subheader("🧪 Simula un pasajero para ver su satisfacción")
