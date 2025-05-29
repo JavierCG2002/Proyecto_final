@@ -102,7 +102,6 @@ with st.form("form_prediccion"):
     food = st.slider("Comida y bebida (0 es 'no aplicable')", 0, 5, 3)
     online_boarding = st.slider("Embarque online (0 es 'no aplicable')", 0, 5, 3)
     gate_location = st.slider("Ubicación de la puerta de embarque (0 es 'no aplicable')", 0, 5, 3)
-    food = st.slider("Comida y bebida (0 es 'no aplicable')", 0, 5, 3)
     seat_comfort = st.slider("Comodidad del asiento (0 es 'no aplicable')", 0, 5, 3)
     entertainment = st.slider("Entretenimiento a bordo (0 es 'no aplicable')", 0, 5, 3)
     onboard_service = st.slider("Servicio a bordo (0 es 'no aplicable')", 0, 5, 3)
