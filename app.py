@@ -128,7 +128,7 @@ if submit:
         'Departure/Arrival time convenient': [departure_convenient],
         'Ease of Online booking': [online_booking],
         'Gate location': [gate_location],
-        'Food and drink': [food_drink],
+        'Food and drink': [food],
         'Online boarding': [online_boarding],
         'Seat comfort': [seat_comfort],
         'Inflight entertainment': [entertainment],
