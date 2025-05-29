@@ -9,13 +9,30 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 st.set_page_config(layout="wide")
 st.title("Análisis de Satisfacción de Pasajeros de una Aerolínea")
 
-# 1. Carga del dataset
+# Carga del dataset
 @st.cache_data
 def cargar_datos():
     df = pd.read_csv("satisfaccion_aerolinea.csv")
     return df
 
 df = cargar_datos()
+
+# Codificación para variables categóricas
+df_model = df.copy()
+df_model.dropna(inplace=True)
+df_model['satisfaction'] = df_model['satisfaction'].apply(lambda x: 1 if x == "satisfied" else 0)
+
+X = df_model.drop(['id', 'satisfaction'], axis=1)
+y = df_model['satisfaction']
+
+# Convertir categóricas a dummy variables
+X = pd.get_dummies(X)
+
+# Train/test, split y modelo
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+modelo_rf = RandomForestClassifier(n_estimators=100, random_state=42)
+modelo_rf.fit(X_train, y_train)
+y_pred_rfm = modelo_rf.predict(X_test)
 
 st.subheader("Introducción")
 
@@ -39,6 +56,17 @@ from PIL import Image
 image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png").resize((600, 400))
 # Mostrarla
 st.image(image)
+
+st.subheader("Elección y justificación de modelos o técnicas de IA/ML.")
+
+st.markdown("""
+Se eligió el modelo de aprendizaje supervisado, ya que el objetivo del proyecto es predecir una categoría específica 
+– la satisfacción del cliente–, dada un conjunto de características observadas. Dado que la variable objetivo en los 
+datos está etiquetada, ‘satisfaction’, el aprendizaje supervisado es la opción obvia. 
+Además, elegimos el algoritmo Random Forest porque tiene una alta precisión, ya que maneja bien tanto las variables 
+categóricas como las numéricas, y ofrece una medida de la importancia de cada variable. Esto es importante para 
+nuestro objetivo, ya que podemos identificar qué factor es el más influyente en la satisfacción del pasajero.
+""")
 
 # Tabla de los modelos
 datos_tabla_modelos = {
@@ -71,27 +99,63 @@ datos_tabla_modelos = {
 tabla_modelos = pd.DataFrame(datos_tabla_modelos)
 
 # Mostrar tabla en Streamlit
-st.subheader("Comparativa de modelos y su precision")
 st.table(tabla_modelos)
 
+st.header("Resultados de Random Forest")
 
-st.header("Predicción de satisfacción")
+st.markdown("""
+El modelo obtuvo una **precisión aproximada del 96%**, lo cual indica una alta capacidad de acierto en la 
+predicción del nivel de satisfacción de los pasajeros.
 
-# Codificación para variables categóricas
-df_model = df.copy()
-df_model.dropna(inplace=True)
-df_model['satisfaction'] = df_model['satisfaction'].apply(lambda x: 1 if x == "satisfied" else 0)
+Otras métricas, como el Error Cuadrático Medio, el Error Absoluto Medio o el Coeficiente de Determinación, 
+sugieren que el modelo también **captura con eficacia** la relación entre las variables de entrada y el 
+objetivo. Aunque estas métricas son más comunes en modelos de regresión, pueden proporcionar una idea 
+general de la calidad del modelo:
 
-X = df_model.drop(['id', 'satisfaction'], axis=1)
-y = df_model['satisfaction']
+""")
+col1, col2, col3 = st.columns(3)
+col1.metric("MSE", "0.04")
+col2.metric("MAE", "0.04")
+col3.metric("R²", "0.82")
+st.markdown("""
+---
+            
+A continuación se muestra la matriz de confusión, que permite visualizar el rendimiento del modelo respecto a 
+las clases predichas frente a las reales:
+""")
 
-# Convertir categóricas a dummy variables
-X = pd.get_dummies(X)
+# Calcular la matriz
+cm = confusion_matrix(y_test, y_pred_rfm)
 
-# Train/test, split y modelo
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-modelo_rf = RandomForestClassifier(n_estimators=100, random_state=42)
-modelo_rf.fit(X_train, y_train)
+# Mostrarla como gráfico
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Neutral o no satisfechos", "Satisfechos"],
+    yticklabels=["Neutral o no satisfechos", "Satisfechos"],
+    ax=ax
+)
+ax.set_xlabel("Predicción")
+ax.set_ylabel("Real")
+ax.set_title("Matriz de Confusión Random Forest")
+st.pyplot(fig)
+
+# Extraer valores y calcular tasas de error
+TP = cm[0, 0]
+FN = cm[0, 1]
+FP = cm[1, 0]
+TN = cm[1, 1]
+
+fn_rate = FN / (TP + FN) * 100
+fp_rate = FP / (FP + TN) * 100
+
+st.markdown(f"""
+- **Errores tipo FN** (se predijo "no satisfecho" pero era "satisfecho"): `{fn_rate:.2f}%`
+- **Errores tipo FP** (se predijo "satisfecho" pero era "no satisfecho"): `{fp_rate:.2f}%`
+""")
 
 # Accuracy
 accuracy = accuracy_score(y_test, modelo_rf.predict(X_test))
