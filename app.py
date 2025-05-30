@@ -354,6 +354,48 @@ ax.legend(title='Satisfacción')
 plt.tight_layout()
 st.pyplot(fig, use_container_width=False)
 
+# Wifi
+valoracion_wifi = df_original['Inflight wifi service'].value_counts().sort_index()
+
+fig, ax = plt.subplots(figsize=(4.5, 4))
+sns.barplot(x=valoracion_wifi.index, y=valoracion_wifi.values, palette="Blues", ax=ax)
+
+ax.set_title("Valoraciones del servicio de WiFi (0 = no aplicable)")
+ax.set_xlabel("Valoración")
+ax.set_ylabel("Cantidad de pasajeros")
+plt.tight_layout()
+st.pyplot(fig, use_container_width=False)
+
+# Wifi
+valoracion_boarding = df_original['Online boarding'].value_counts().sort_index()
+
+fig, ax = plt.subplots(figsize=(4.5, 4))
+sns.barplot(x=valoracion_boarding.index, y=valoracion_boarding.values, palette="Blues", ax=ax)
+
+ax.set_title("Valoraciones del Online boarding (0 = no aplicable)")
+ax.set_xlabel("Valoración")
+ax.set_ylabel("Cantidad de pasajeros")
+plt.tight_layout()
+st.pyplot(fig, use_container_width=False)
+
+st.subheader("📈 Valoración media del WiFi según la distancia del vuelo")
+
+# Crear una nueva columna con rangos de distancia para agrupar
+df_prueba = df_original.copy()
+df_prueba['satisfaction_binaria'] = df_prueba['satisfaction'].apply(lambda x: 1 if x == 'satisfied' else 0)
+
+# Agrupar por edad y calcular satisfacción media (porcentaje de satisfechos)
+satisfaccion_por_edad = df_prueba.groupby('Age')['satisfaction_binaria'].mean().reset_index()
+
+# Crear gráfico
+fig, ax = plt.subplots()
+ax.plot(satisfaccion_por_edad['Age'], satisfaccion_por_edad['satisfaction_binaria'], color='green')
+ax.set_title("Proporción de pasajeros satisfechos según la edad")
+ax.set_xlabel("Edad")
+ax.set_ylabel("Proporción de satisfacción (0-1)")
+plt.tight_layout()
+st.pyplot(fig, use_container_width=False)
+
 
 # Accuracy
 accuracy = accuracy_score(y_test, modelo_rf.predict(X_test))
