@@ -168,7 +168,7 @@ cm = confusion_matrix(y_test, y_pred_rfm)
 image = Image.open("imagenes/imagen_matriz.png")
 st.image(image, width=600)
 
-fig, ax = plt.figure(figsize=(4, 3))  # Tamaño más pequeño que el estándar
+fig, ax = plt.subplots(figsize=(4, 3))  # Tamaño más pequeño que el estándar
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
             xticklabels=["Neutral o no satisfechos", "Satisfechos"],
             yticklabels=["Neutral o no satisfechos", "Satisfechos"],
@@ -179,7 +179,7 @@ plt.set_title("Matriz de Confusión Random Forest")
 plt.tight_layout()
 
 # Mostrar en Streamlit
-st.pyplot(plt.gcf())
+st.pyplot(fig)
 
 '''
 # Extraer valores y calcular tasas de error
