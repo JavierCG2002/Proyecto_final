@@ -166,7 +166,7 @@ cm = confusion_matrix(y_test, y_pred_rfm)
 
 # Mostrar imagen de matriz
 image = Image.open("imagenes/imagen_matriz.png")
-st.image(image, width=300)
+st.image(image, width=600)
 
 # Extraer valores y calcular tasas de error
 TP = cm[0, 0]
