@@ -302,26 +302,6 @@ datos_tabla_persos = {
     ]
 }
 
-# Importancia de las variables
-feature_importances = pd.Series(modelo_rf.feature_importances_, index=X_train.columns)
-feature_importances_percent = (feature_importances * 100).round(2)
-feature_importances_percent_sorted = feature_importances_percent.sort_values(ascending=False)
-
-# Convertir a un dataFrame
-importance_df = feature_importances_percent_sorted.reset_index()
-importance_df.columns = ['Feature', 'Importance (%)']
-
-# Grafico de las variables
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(data=importance_df, x='Importance (%)', y='Feature', palette='Blues_d', ax=ax)
-ax.set_title('Importancia de características (%) - Random Forest')
-ax.set_xlabel('Importancia (%)')
-ax.set_ylabel('Características')
-plt.tight_layout()
-
-# Mostrar en Streamlit
-st.pyplot(fig, use_container_width = False)
-
 # Crear DataFrame
 tabla_pesos = pd.DataFrame(datos_tabla_persos)
 
