@@ -58,21 +58,81 @@ st.image(image)
 
 st.subheader("Propuesta de proyecto")
 st.markdown("""
-Lo que se propone en este proyecto es utilizar las valoraciones que una aerolínea ha recogido de sus usuarios —desde la compra del billete online hasta el uso del wifi en vuelo—, incluyendo también una valoración final del cliente sobre si ha estado satisfecho o no.  
+Lo que se propone en este proyecto es utilizar las valoraciones que una aerolínea ha recogido de sus usuarios 
+—desde la compra del billete online hasta el uso del wifi en vuelo—, incluyendo también una valoración final 
+del cliente sobre si ha estado satisfecho o no.  
 
-Con estos datos, se construirá un modelo capaz de predecir si un cliente estará satisfecho, sin necesidad de que lo indique explícitamente.  
-Una vez entrenado el modelo, se analizará qué factores tienen mayor influencia en la percepción de los usuarios, para detectar posibles áreas de mejora por parte de la aerolínea.
+Con estos datos, se construirá un modelo capaz de predecir si un cliente estará satisfecho, sin necesidad de 
+que lo indique explícitamente. Una vez entrenado el modelo, se analizará qué factores tienen mayor influencia 
+en la percepción de los usuarios, para detectar posibles áreas de mejora por parte de la aerolínea.
 """)
 
-df_model = cargar_datos()
-df_model.drop(columns=['Unnamed: 0'], inplace=True)
+df_original = cargar_datos()
+df_original.drop(columns=['Unnamed: 0'], inplace=True)
 
 #  Mostrar una vista previa
-st.subheader("Vista del conjunto de datos")
-st.dataframe(df_model.head(7))
+st.subheader("Vista del conjunto de datos del dataset:")
+st.dataframe(df_original.head(7))
+
+st.header("Evaluación de la calidad y adecuación del conjunto de datos")
+
+st.markdown("""
+Este dataset contiene un total de **129.880 filas** y **24 columnas**. Las columnas incluidas en el conjunto de datos son:
+
+- **Gender**: Género del pasajero (Female, Male)
+- **Customer Type**: Tipo de cliente (Loyal customer, Disloyal customer)
+- **Age**: Edad
+- **Type of Travel**: Tipo de viaje (Personal, Business)
+- **Class**: Clase del vuelo (Business, Eco, Eco Plus)
+- **Flight Distance**: Distancia del vuelo
+
+**Valoraciones del servicio del 0 al 5**, donde 0 indica "No aplicable" (es decir, el cliente no usó o no valoró ese servicio):
+- Inflight wifi service
+- Departure/Arrival time convenient
+- Ease of Online booking
+- Gate location
+- Food and drink
+- Online boarding
+- Seat comfort
+- Inflight entertainment
+- On-board service
+- Leg room service
+- Baggage handling
+- Check-in service
+- Inflight service
+- Cleanliness
+
+- **Departure Delay in Minutes**
+- **Arrival Delay in Minutes**
+- **Satisfaction**: Nivel de satisfacción (Satisfied, Neutral or Dissatisfied)
+""")
+
+st.markdown("""
+Con esto se puede ver que se trata de un conjunto de datos bastante extenso. Del análisis realizado 
+se destacan los siguientes puntos:
+
+-   Las columnas de valoraciones del servicio requieren interpretación específica: los valores 0 
+    **no significan necesariamente una mala experiencia**, sino que el servicio no fue utilizado. 
+    Por tanto, **se conservaron** porque aportan información sobre la disponibilidad o el uso de los servicios.
+-   La columna **Satisfaction**, que será la variable objetivo, tiene dos valores:
+    - Neutral or Dissatisfied: 73.452 registros
+    - Satisfied: 56.428 registros  
+    Esto representa una distribución **relativamente equilibrada**, lo que **no requiere técnicas de balanceo** como sobremuestreo o submuestreo.
+-   Solo se encontraron **393 valores nulos** en la columna Arrival Delay in Minutes.
+""")
+
+st.header("Procesado, limpieza y transformación de los datos")
+
+st.markdown("""
+-   Los valores nulos en`Arrival Delay in Minutes fueron reemplazados por 0, asumiendo que son vuelos sin retraso registrado.
+-   La única columna eliminada fue **id**, al no aportar valor al modelo.
+-   Las variables categóricas (como Type of Travel, Customer Type, Gender, etc.) fueron **codificadas numéricamente** 
+    para que los algoritmos de machine learning pudieran procesarlas correctamente.
+""")
 
 
 # Codificación para variables categóricas
+df_model = df_original.copy()
 df_model['Arrival Delay in Minutes'].fillna(0, inplace = True)
 df_model.drop(columns=['id'], inplace=True)
 columnas_cat = ['Gender', 'Customer Type', 'Type of Travel', 'Class', 'satisfaction']
@@ -87,6 +147,10 @@ y = df_model['satisfaction']
 
 # Convertir categóricas a dummy variables
 X = pd.get_dummies(X)
+
+#  Mostrar el dataset ya procesado
+st.subheader("Vista del dataset ya procesado:")
+st.dataframe(df_model.head(7))
 
 # Train/test, split y modelo
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -164,11 +228,8 @@ las clases predichas frente a las reales:
 # Calcular la matriz
 cm = confusion_matrix(y_test, y_pred_rfm)
 
-# Mostrar imagen de matriz
-image = Image.open("imagenes/imagen_matriz.png")
-st.image(image, width=600)
-
-fig, ax = plt.subplots(figsize=(4, 3))
+# Mostrar matriz
+fig, ax = plt.subplots(figsize=(4.5, 4))
 sns.heatmap(
     cm,
     annot=True,
@@ -180,11 +241,10 @@ sns.heatmap(
 )
 ax.set_xlabel("Predicción")
 ax.set_ylabel("Real")
-ax.set_title("Matriz de Confusión Random Forest - Satisfacción")
 #plt.tight_layout()
 
 # Mostrar en Streamlit
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=False)
 
 # Extraer valores y calcular tasas de error
 TP = cm[0, 0]
@@ -229,7 +289,7 @@ tabla_pesos = pd.DataFrame(datos_tabla_persos)
 
 # Mostrar tabla en Streamlit
 st.title("Importancia de Características - Random Forest")
-st.dataframe(tabla_pesos.style.format({'Importancia (%)': '{:.2f}'}))
+st.dataframe(tabla_pesos.style.format({'Importancia (%)': '{:.2f}'}), width=400)
 
 
 st.markdown("""
@@ -270,6 +330,29 @@ dentro del avión, sino también cómo se sienten desde antes de volar. Cosas co
 si el viaje es por trabajo o por ocio, y si pueden hacer todo fácil desde el móvil (reserva y embarque) 
 pesan mucho en cómo ven todo el servicio. 
 """)
+
+# Gráficos del dataset original
+# Clase
+fig, ax = plt.subplots(figsize=(4.5, 4))
+sns.countplot(data=df_original, x='Class', hue='satisfaction', palette='Set2', ax=ax)
+
+ax.set_title('Satisfacción según las clases clase')
+ax.set_xlabel('Clase del vuelo')
+ax.set_ylabel('Cantidad')
+ax.legend(title='Satisfacción')
+plt.tight_layout()
+st.pyplot(fig, use_container_width=False)
+
+# Tipo de viaje
+fig, ax = plt.subplots(figsize=(4.5, 4))
+sns.countplot(data=df_original, x='Type of Travel', hue='satisfaction', palette='Set2', ax=ax)
+
+ax.set_title('Satisfacción según el tipo de viaje')
+ax.set_xlabel('Tipo de viaje')
+ax.set_ylabel('Cantidad')
+ax.legend(title='Satisfacción')
+plt.tight_layout()
+st.pyplot(fig, use_container_width=False)
 
 
 # Accuracy
