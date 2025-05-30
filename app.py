@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix 
+from PIL import Image
 
 st.set_page_config(layout="wide")
 st.title("Análisis de Satisfacción de Pasajeros de una Aerolínea")
@@ -92,11 +93,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 modelo_rf = RandomForestClassifier(n_estimators=100, random_state=42)
 modelo_rf.fit(X_train, y_train)
 y_pred_rfm = modelo_rf.predict(X_test)
-
-
-
-import streamlit as st
-from PIL import Image
 
 st.subheader("Elección y justificación de modelos o técnicas de IA/ML.")
 
