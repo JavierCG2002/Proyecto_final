@@ -378,14 +378,12 @@ ax.set_ylabel("Cantidad de pasajeros")
 plt.tight_layout()
 st.pyplot(fig, use_container_width=False)
 
-st.subheader("📈 Valoración media del WiFi según la distancia del vuelo")
-
-# Crear una nueva columna con rangos de distancia para agrupar
-df_prueba = df_original.copy()
-df_prueba['satisfaction_binaria'] = df_prueba['satisfaction'].apply(lambda x: 1 if x == 'satisfied' else 0)
+# Satisfaccion por edad
+df_prov = df_original.copy()
+df_prov['satisfaction_binaria'] = df_prov['satisfaction'].apply(lambda x: 1 if x == 'satisfied' else 0)
 
 # Agrupar por edad y calcular satisfacción media (porcentaje de satisfechos)
-satisfaccion_por_edad = df_prueba.groupby('Age')['satisfaction_binaria'].mean().reset_index()
+satisfaccion_por_edad = df_prov.groupby('Age')['satisfaction_binaria'].mean().reset_index()
 
 # Crear gráfico
 fig, ax = plt.subplots()
@@ -421,14 +419,29 @@ plt.tight_layout()
 # Mostrar en Streamlit
 st.pyplot(fig)
 
+
+
+# Diccionarios de mapeo para variables categóricas
+gender_map = {'Male': 1, 'Female': 0}
+customer_type_map = {'Loyal Customer': 1, 'disloyal Customer': 0}
+travel_type_map = {'Business travel': 1, 'Personal Travel': 0}
+travel_class_map = {'Business': 2, 'Eco Plus': 1, 'Eco': 0}
+
 # Formulario de predicción
 st.subheader("Formulario de predicción")
 with st.form("form_prediccion"):
-    gender = st.selectbox("Género", df_model['Gender'].unique())
-    customer_type = st.selectbox("Tipo de cliente", df_model['Customer Type'].unique())
+
+    gender_label = st.selectbox("Género", list(gender_map.keys()))
+    customer_type_label = st.selectbox("Tipo de cliente", list(customer_type_map.keys()))
     age = st.slider("Edad", 7, 85, 30)
-    travel_type = st.selectbox("Tipo de viaje", df_model['Type of Travel'].unique())
-    travel_class = st.selectbox("Clase", df_model['Class'].unique())
+    travel_type_label = st.selectbox("Tipo de viaje", list(travel_type_map.keys()))
+    travel_class_label = st.selectbox("Clase", list(travel_class_map.keys()))
+
+    gender = gender_map[gender_label]
+    customer_type = customer_type_map[customer_type_label]
+    travel_type = travel_type_map[travel_type_label]
+    travel_class = travel_class_map[travel_class_label]
+
     departure_convenient = st.slider("Hora de salida/llegada conveniente", 0, 5, 3)
     flight_distance = st.slider("Distancia del vuelo", 30, 5000, 1000)
     online_booking = st.slider("Facilidad de reserva online", 0, 5, 3)
