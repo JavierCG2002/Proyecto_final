@@ -165,7 +165,7 @@ las clases predichas frente a las reales:
 cm = confusion_matrix(y_test, y_pred_rfm)
 
 # Mostrarla como gráfico
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(4, 3))
 sns.heatmap(
     cm,
     annot=True,
