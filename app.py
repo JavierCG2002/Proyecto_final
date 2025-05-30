@@ -168,20 +168,24 @@ cm = confusion_matrix(y_test, y_pred_rfm)
 image = Image.open("imagenes/imagen_matriz.png")
 st.image(image, width=600)
 
-fig, ax = plt.subplots(figsize=(4, 3))  # Tamaño más pequeño que el estándar
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Neutral o no satisfechos", "Satisfechos"],
-            yticklabels=["Neutral o no satisfechos", "Satisfechos"],
-            ax = ax),
-plt.set_xlabel("Predicción")
-plt.set_ylabel("Real")
-plt.set_title("Matriz de Confusión Random Forest")
-plt.tight_layout()
+fig, ax = plt.subplots(figsize=(4, 3))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Neutral o no satisfechos", "Satisfechos"],
+    yticklabels=["Neutral o no satisfechos", "Satisfechos"],
+    ax=ax
+)
+ax.set_xlabel("Predicción")
+ax.set_ylabel("Real")
+ax.set_title("Matriz de Confusión Random Forest - Satisfacción")
+#plt.tight_layout()
 
 # Mostrar en Streamlit
 st.pyplot(fig)
 
-'''
 # Extraer valores y calcular tasas de error
 TP = cm[0, 0]
 FN = cm[0, 1]
@@ -190,11 +194,10 @@ TN = cm[1, 1]
 
 fn_rate = FN / (TP + FN) * 100
 fp_rate = FP / (FP + TN) * 100
-'''
 
 st.markdown(f"""
-- **Errores tipo FN** (se predijo "no satisfecho" pero era "satisfecho"): 1,5 %
-- **Errores tipo FP** (se predijo "satisfecho" pero era "no satisfecho"): 5,5 - 6 %
+- **Errores tipo FN** (se predijo "no satisfecho" pero era "satisfecho"): `{fn_rate:.2f}%`
+- **Errores tipo FP** (se predijo "satisfecho" pero era "no satisfecho"): `{fp_rate:.2f}%`
 """)
 
 st.markdown(f"""
