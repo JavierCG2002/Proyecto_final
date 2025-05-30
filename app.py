@@ -68,7 +68,6 @@ en la percepción de los usuarios, para detectar posibles áreas de mejora por p
 """)
 
 df_original = cargar_datos()
-df_original.drop(columns=['Unnamed: 0'], inplace=True)
 
 #  Mostrar una vista previa
 st.subheader("Vista del conjunto de datos del dataset:")
@@ -284,11 +283,31 @@ datos_tabla_persos = {
     ]
 }
 
+# Importancia de las variables
+feature_importances = pd.Series(modelo_rf.feature_importances_, index=X_train.columns)
+feature_importances_percent = (feature_importances * 100).round(2)
+feature_importances_percent_sorted = feature_importances_percent.sort_values(ascending=False)
+
+# Convertir a un dataFrame
+importance_df = feature_importances_percent_sorted.reset_index()
+importance_df.columns = ['Feature', 'Importance (%)']
+
+# Grafico de las variables
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=importance_df, x='Importance (%)', y='Feature', palette='Blues_d', ax=ax)
+ax.set_title('Importancia de características (%) - Random Forest')
+ax.set_xlabel('Importancia (%)')
+ax.set_ylabel('Características')
+plt.tight_layout()
+
+# Mostrar en Streamlit
+st.pyplot(fig, use_container_width = False)
+
 # Crear DataFrame
 tabla_pesos = pd.DataFrame(datos_tabla_persos)
 
 # Mostrar tabla en Streamlit
-st.title("Importancia de Características - Random Forest")
+st.title("Importancia de los Valores - Random Forest")
 st.dataframe(tabla_pesos.style.format({'Importancia (%)': '{:.2f}'}), width=400)
 
 
@@ -398,27 +417,6 @@ st.pyplot(fig, use_container_width=False)
 # Accuracy
 accuracy = accuracy_score(y_test, modelo_rf.predict(X_test))
 st.success(f"Accuracy del modelo: {accuracy:.2f}")
-
-# Importancia de las variables
-feature_importances = pd.Series(modelo_rf.feature_importances_, index=X_train.columns)
-feature_importances_percent = (feature_importances * 100).round(2)
-feature_importances_percent_sorted = feature_importances_percent.sort_values(ascending=False)
-
-# Convertir a DataFrame
-importance_df = feature_importances_percent_sorted.reset_index()
-importance_df.columns = ['Feature', 'Importance (%)']
-
-# Crear el gráfico
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(data=importance_df, x='Importance (%)', y='Feature', palette='Blues_d', ax=ax)
-ax.set_title('Importancia de características (%) - Random Forest')
-ax.set_xlabel('Importancia (%)')
-ax.set_ylabel('Características')
-plt.tight_layout()
-
-# Mostrar en Streamlit
-st.pyplot(fig)
-
 
 
 # Diccionarios de mapeo para variables categóricas
