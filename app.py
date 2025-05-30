@@ -274,11 +274,6 @@ fn_rate = FN / (TP + FN) * 100
 fp_rate = FP / (FP + TN) * 100
 
 st.markdown(f"""
-- **Errores tipo FN** (se predijo "no satisfecho" pero era "satisfecho"): `{fn_rate:.2f}%`
-- **Errores tipo FP** (se predijo "satisfecho" pero era "no satisfecho"): `{fp_rate:.2f}%`
-""")
-
-st.markdown(f"""
 Lo que más nos interesa del modelo resultante es como este realizo la predicción y que 
 grado de importancia tuvo cada uno de los valores. Mediante el atributo ‘feature_importances_’ 
 del modelo Random Forest podemos obtener la importancia relativa de cada variable (feature) 
