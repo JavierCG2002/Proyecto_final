@@ -164,22 +164,10 @@ las clases predichas frente a las reales:
 # Calcular la matriz
 cm = confusion_matrix(y_test, y_pred_rfm)
 
-# Mostrarla como gráfico
-plt.subplots(figsize=(4, 3))
-sns.heatmap(
-    cm,
-    annot=True,
-    fmt="d",
-    cmap="Blues",
-    xticklabels=["Neutral o no satisfechos", "Satisfechos"],
-    yticklabels=["Neutral o no satisfechos", "Satisfechos"],
-)
-plt.xlabel("Predicción")
-plt.ylabel("Real")
-plt.title("Matriz de Confusión Random Forest")
+# Mostrar imagen de matriz
+image = Image.open("imagenes/matriz_confusion.png")
+st.image(image, width=300)
 
-# Mostrar en Streamlit
-st.pyplot(plt.gcf())  # Obtener la figura actual
 # Extraer valores y calcular tasas de error
 TP = cm[0, 0]
 FN = cm[0, 1]
