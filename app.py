@@ -15,25 +15,6 @@ def cargar_datos():
     df = pd.read_csv("satisfaccion_aerolinea.csv")
     return df
 
-df = cargar_datos()
-
-# Codificación para variables categóricas
-df_model = df.copy()
-df_model.dropna(inplace=True)
-df_model['satisfaction'] = df_model['satisfaction'].apply(lambda x: 1 if x == "satisfied" else 0)
-
-X = df_model.drop(['id', 'satisfaction'], axis=1)
-y = df_model['satisfaction']
-
-# Convertir categóricas a dummy variables
-X = pd.get_dummies(X)
-
-# Train/test, split y modelo
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-modelo_rf = RandomForestClassifier(n_estimators=100, random_state=42)
-modelo_rf.fit(X_train, y_train)
-y_pred_rfm = modelo_rf.predict(X_test)
-
 st.subheader("Introducción")
 
 st.markdown("""
@@ -45,17 +26,77 @@ El objetivo es comprender qué factores influyen más en la percepción del clie
 que permita anticipar si un pasajero estará satisfecho o no.
 """)
 
-# 2. Mostrar una vista previa
-st.subheader("Vista del conjunto de datos")
-st.dataframe(df.head(7))
+st.subheader("El porqué de esta elección")
+st.markdown("""
+De las pocas veces que he tenido la oportunidad de viajar en avión, he disfrutado no solo del vuelo en sí, 
+sino también de todo el proceso: desde el embarque hasta la facturación.  
+Esto me llevó a, en el momento de tener que elegir un tema para este trabajo, inclinarme por analizar la 
+valoración y satisfacción (o no) de las personas que han volado.  
 
-import streamlit as st
-from PIL import Image
+Más allá de la motivación personal, es sabido que cualquier empresa busca, al menos en teoría, obtener 
+feedback de sus clientes sobre los servicios ofrecidos y en qué puntos se podrían mejorar.  
+En el sector aéreo, mejorar esta experiencia puede suponer una ventaja competitiva significativa.  
+El uso de IA y modelos predictivos ofrece a las aerolíneas una herramienta poderosa para actuar de 
+forma proactiva: mejorar la calidad del servicio, reducir costes y fidelizar clientes.
+""")
+
+st.subheader("Obtención y tratamiento de datos")
+st.markdown("""
+La búsqueda de un conjunto de datos acorde con la idea del proyecto se inició primero en páginas de datasets 
+públicos como [datos.gob.es](https://datos.gob.es) o el Instituto Nacional de Estadística.  
+Tras no encontrar un conjunto de datos satisfactorio, se pasó a buscar en la plataforma Kaggle, donde 
+finalmente se eligió el dataset **"Passenger Satisfaction"**, creado por el usuario **John D**.
+Puedes consultarse en el siguiente enlace:  
+[https://www.kaggle.com/datasets/johndddddd/customer-satisfaction/data](https://www.kaggle.com/datasets/johndddddd/customer-satisfaction/data)
+""")
 
 # Cargar la imagen
 image = Image.open("imagenes/Captura de pantalla 2025-05-28 192158.png").resize((600, 400))
 # Mostrarla
 st.image(image)
+
+st.subheader("Propuesta de proyecto")
+st.markdown("""
+Lo que se propone en este proyecto es utilizar las valoraciones que una aerolínea ha recogido de sus usuarios —desde la compra del billete online hasta el uso del wifi en vuelo—, incluyendo también una valoración final del cliente sobre si ha estado satisfecho o no.  
+
+Con estos datos, se construirá un modelo capaz de predecir si un cliente estará satisfecho, sin necesidad de que lo indique explícitamente.  
+Una vez entrenado el modelo, se analizará qué factores tienen mayor influencia en la percepción de los usuarios, para detectar posibles áreas de mejora por parte de la aerolínea.
+""")
+
+df_model = cargar_datos()
+df_model.drop(columns=['Unnamed: 0'], inplace=True)
+
+#  Mostrar una vista previa
+st.subheader("Vista del conjunto de datos")
+st.dataframe(df_model.head(7))
+
+
+# Codificación para variables categóricas
+df_model['Arrival Delay in Minutes'].fillna(0, inplace = True)
+df_model.drop(columns=['id'], inplace=True)
+columnas_cat = ['Gender', 'Customer Type', 'Type of Travel', 'Class', 'satisfaction']
+
+for col in columnas_cat:
+    df_model[col] = df_model[col].astype('category')
+    df_model[col] = df_model[col].cat.codes
+
+
+X = df_model.drop(['satisfaction'], axis=1)
+y = df_model['satisfaction']
+
+# Convertir categóricas a dummy variables
+X = pd.get_dummies(X)
+
+# Train/test, split y modelo
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+modelo_rf = RandomForestClassifier(n_estimators=100, random_state=42)
+modelo_rf.fit(X_train, y_train)
+y_pred_rfm = modelo_rf.predict(X_test)
+
+
+
+import streamlit as st
+from PIL import Image
 
 st.subheader("Elección y justificación de modelos o técnicas de IA/ML.")
 
