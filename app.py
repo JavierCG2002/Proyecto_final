@@ -196,7 +196,7 @@ datos_tabla_modelos = {
         "SVM Linear"
     ],
     "Datos normales": [
-        "95,58",
+        "**95,58**",
         "94,52",
         "64,2 (k = 20)",
         "-"
