@@ -52,7 +52,7 @@ Puedes consultarse en el siguiente enlace:
 """)
 
 # Cargar la imagen
-image = Image.open("imagenes/imagen_passenger_satisaction.png").resize((600, 400))
+image = Image.open("imagenes/imagen_passenger_satisaction.png")
 # Mostrarla
 st.image(image)
 
