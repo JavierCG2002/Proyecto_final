@@ -165,7 +165,7 @@ las clases predichas frente a las reales:
 cm = confusion_matrix(y_test, y_pred_rfm)
 
 # Mostrarla como gráfico
-fig, ax = plt.subplots(figsize=(4, 3))
+plt.subplots(figsize=(4, 3))
 sns.heatmap(
     cm,
     annot=True,
@@ -173,13 +173,13 @@ sns.heatmap(
     cmap="Blues",
     xticklabels=["Neutral o no satisfechos", "Satisfechos"],
     yticklabels=["Neutral o no satisfechos", "Satisfechos"],
-    ax=ax
 )
-ax.set_xlabel("Predicción")
-ax.set_ylabel("Real")
-ax.set_title("Matriz de Confusión Random Forest")
-st.pyplot(fig)
+plt.xlabel("Predicción")
+plt.ylabel("Real")
+plt.title("Matriz de Confusión Random Forest")
 
+# Mostrar en Streamlit
+st.pyplot(plt.gcf())  # Obtener la figura actual
 # Extraer valores y calcular tasas de error
 TP = cm[0, 0]
 FN = cm[0, 1]
