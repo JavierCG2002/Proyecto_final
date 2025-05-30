@@ -133,15 +133,15 @@ y de prueba del modelo:
 X = df.drop(columns=['satisfaction'])
 y = df['satisfaction']
 
-# Entrenamiento: 20 % de test
+Entrenamiento: 20 % de test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)           
 
-# Escalar features con StandardScaler
+Escalar features con StandardScaler
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-#Reducir la dimensionalidad del dataset, manteniendo un 95% de la varianza.
+Reducir la dimensionalidad del dataset, manteniendo un 95% de la varianza.
 pca = PCA(n_components=0.95)
 X_train_pca = pca.fit_transform(X_train_scaled)
 X_test_pca = pca.transform(X_test_scaled)            
