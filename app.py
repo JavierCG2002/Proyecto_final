@@ -165,7 +165,7 @@ las clases predichas frente a las reales:
 cm = confusion_matrix(y_test, y_pred_rfm)
 
 # Mostrar imagen de matriz
-image = Image.open("imagenes/matriz_confusion.png")
+image = Image.open("imagenes/imagen_matriz.png")
 st.image(image, width=300)
 
 # Extraer valores y calcular tasas de error
