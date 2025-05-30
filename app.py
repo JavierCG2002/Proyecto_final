@@ -130,8 +130,8 @@ st.markdown("""
 Una vez el dataset ha sido creado se dispone se parar los datos de entrada y salida, y los datos de entrenamiento 
 y de prueba del modelo:
             
-X = df.drop(columns=['satisfaction'])
-y = df['satisfaction']
+X = df.drop(columns=['satisfaction'])\n
+y = df['satisfaction']\n
 
 Entrenamiento: 20 % de test\n
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n           
