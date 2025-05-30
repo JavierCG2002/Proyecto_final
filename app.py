@@ -285,35 +285,34 @@ del modelo Random Forest podemos obtener la importancia relativa de cada variabl
 en las predicciones del modelo, como se puede ver:
 """)
 
-# Tabla de importancia de características
-datos_tabla_persos = {
-    'Característica': [
-        'Class', 'Online boarding', 'Inflight wifi service', 'Type of Travel',
-        'Inflight entertainment', 'Seat comfort', 'Ease of Online booking',
-        'Age', 'Customer Type', 'Flight Distance', 'Inflight service',
-        'Checkin service', 'Baggage handling', 'Cleanliness',
-        'Leg room service', 'On-board service', 'Gate location',
-        'Departure/Arrival time convenient', 'Arrival Delay in Minutes',
-        'Food and drink', 'Departure Delay in Minutes', 'Gender'
-    ],
-    'Importancia (%)': [
-        16.25, 14.55, 13.32, 7.81, 5.99, 4.12, 4.01, 3.49, 3.44, 3.37,
-        3.15, 3.14, 2.78, 2.70, 2.25, 2.23, 1.80, 1.47, 1.30, 1.26, 1.13, 0.46
-    ]
-}
 
-# Crear DataFrame
-tabla_pesos = pd.DataFrame(datos_tabla_persos)
 
-# Mostrar tabla en Streamlit
+# Importancia de las variables
+feature_importances = pd.Series(modelo_rf.feature_importances_, index=X_train.columns)
+feature_importances_percent = (feature_importances * 100).round(2)
+feature_importances_percent_sorted = feature_importances_percent.sort_values(ascending=False)
+
+# Convertir a un dataFrame
+importance_df = feature_importances_percent_sorted.reset_index()
+importance_df.columns = ['Feature', 'Importance (%)']
+
+# Grafico de las variables
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=importance_df, x='Importance (%)', y='Feature', palette='Blues_d', ax=ax)
+ax.set_title('Importancia de características (%) - Random Forest')
+ax.set_xlabel('Importancia (%)')
+ax.set_ylabel('Características')
+plt.tight_layout()
+
 st.title("Importancia de los Valores - Random Forest")
-st.dataframe(tabla_pesos.style.format({'Importancia (%)': '{:.2f}'}), width=400)
 
+# Mostrar en Streamlit
+st.pyplot(fig, use_container_width = False)
 
 st.markdown("""
 -   Las tres primeras variables más importantes — **Class**, **Online boarding** y 
-    **Type of Travel** — abarcan aproximadamente el **44% del peso total** del modelo Random Forest.
-    Si a estas se les suman otras tres variables relevantes, como **Inflight wifi service** 
+    **Inflight wifi service** — abarcan aproximadamente el **44% del peso total** del modelo Random Forest.
+    Si a estas se les suman otras tres variables relevantes, como **Time of travel** 
     e **Inflight entertainment**, el peso acumulado alcanza alrededor del **58%**.
 
 -   A partir de la sexta variable, **Seat comfort**, el **peso individual de cada variable 
@@ -329,18 +328,18 @@ st.markdown("""
 Los resultados del modelo Random Forest destacan la importancia de varias variables clave en la 
 predicción de la satisfacción de los pasajeros:
 
--   **Class (16,25%)**: La clase en la que viaja el pasajero (Business, Eco, etc.) es el factor 
+-   **Class (14%)**: La clase en la que viaja el pasajero (Business, Eco, etc.) es el factor 
     más influyente. Tiene sentido, ya que el nivel de comodidad y atención varía considerablemente 
     según la clase elegida.
 
--   **Online boarding (14,55%)**: Representa la experiencia del pasajero al hacer el check-in online. 
+-   **Online boarding (18,55%)**: Representa la experiencia del pasajero al hacer el check-in online. 
     Un proceso fácil y rápido mejora notablemente la percepción del servicio.
 
-- **Type of Travel (7,81%)** y **Customer Type (3,44%)**: Viajar por negocios o por placer y ser un 
+- **Type of Travel (9%)** y **Customer Type (3,44%)**: Viajar por negocios o por placer y ser un 
     cliente habitual o nuevo también influyen en la satisfacción. Por ejemplo, los pasajeros frecuentes 
     pueden tener expectativas más claras o elevadas.
 
-- **Inflight wifi service (13,32%)**: La disponibilidad y calidad del wifi a bordo se valora mucho 
+- **Inflight wifi service (14,32%)**: La disponibilidad y calidad del wifi a bordo se valora mucho 
     actualmente, sobre todo por quienes necesitan mantenerse conectados durante el vuelo.
             
 En general, los resultados muestran que lo más importante para los pasajeros no es solo lo que pasa 
